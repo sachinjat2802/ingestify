@@ -1,10 +1,14 @@
-# 🚀 Ingestify
+<div align="center">
+  <h1>🚀 Ingestify</h1>
+  <p><strong>A composable, pipeline-based data ingestion toolkit for Next.js and Node.js projects.</strong></p>
+  <p>Parse, chunk, transform, validate, and store data from any file source — with a single fluent API.</p>
 
-A composable, pipeline-based data ingestion toolkit for **Next.js** and **Node.js** projects.
+  [![npm version](https://img.shields.io/npm/v/@sachinjat2802/ingestify.svg?style=flat-square)](https://www.npmjs.com/package/@sachinjat2802/ingestify)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+  [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg?style=flat-square)](https://www.typescriptlang.org/)
+</div>
 
-Parse, chunk, transform, validate, and store data from any file source — with a single fluent API.
-
----
+<br />
 
 ## ✨ Features
 
@@ -25,22 +29,23 @@ Parse, chunk, transform, validate, and store data from any file source — with 
 ## 📦 Installation
 
 ```bash
-npm install ingestify
+npm install @sachinjat2802/ingestify
 ```
 
-### Install parsers you need (optional peer dependencies):
+### Optional Peer Dependencies
+Ingestify stays lightweight by only loading the heavy parsers you actually need. Install the ones your project requires:
 
 ```bash
 # PDF support
 npm install pdf-parse
 
-# Word documents
+# Word documents (.docx)
 npm install mammoth
 
 # CSV/TSV
 npm install papaparse
 
-# Excel
+# Excel (.xlsx)
 npm install xlsx
 
 # Schema validation
@@ -51,23 +56,24 @@ npm install zod
 
 ## 🚀 Quick Start
 
-### The Easiest Way (Zero Config)
+### 1. The Easiest Way (Zero Config)
 
-If you just want to drop a file in and get parsed, chunked data back, use the `ingest()` helper:
+If you just want to drop a file in and get parsed, chunked data back, use the `ingest()` helper. It auto-detects the file type!
 
 ```typescript
-import { ingest } from 'ingestify';
+import { ingest } from '@sachinjat2802/ingestify';
 
-// Automatically parses PDF/DOCX/CSV/etc and chunks it
 const result = await ingest(fileBuffer, 'report.pdf', {
   chunkSize: 500,
   chunkOverlap: 50
 });
 
-console.log(`Extracted ${result.chunks.length} chunks!`);
+console.log(`✅ Extracted ${result.chunks.length} chunks!`);
 ```
 
-### Advanced Pipeline (Full Control)
+### 2. Advanced Pipeline (Full Control)
+
+Need middleware, validation, or resilient storage? Build a custom pipeline:
 
 ```typescript
 import { 
@@ -78,15 +84,14 @@ import {
   RetryableStorageAdapter,
   deduplicateChunks,
   filterEmptyChunks
-} from 'ingestify';
+} from '@sachinjat2802/ingestify';
 
 const pipeline = createPipeline('my-ingestion')
-  .parse(new AutoParser())                           // auto-detect file type
+  .parse(new AutoParser())
   .chunk(new RecursiveChunker({ maxSize: 1000, overlap: 100 }))
-  .use(filterEmptyChunks())                          // Built-in middleware
+  .use(filterEmptyChunks())
   .use(deduplicateChunks())
   .transform(async (chunks, ctx) => {
-    // Add custom metadata to each chunk
     return chunks.map(c => ({
       ...c,
       metadata: { ...c.metadata, projectId: ctx.metadata.projectId }
@@ -96,28 +101,22 @@ const pipeline = createPipeline('my-ingestion')
   .on('progress', (p) => console.log(`${p.percent}% — ${p.message}`))
   .build();
 
-// Run it
 const result = await pipeline.run(fileBuffer, 'report.pdf', {
   metadata: { projectId: 'proj-123' }
 });
-
-console.log(`✅ ${result.chunks.length} chunks created in ${result.stats.totalTimeMs}ms`);
 ```
 
-### Handling Massive Files (1GB+)
+### 3. Handling Massive Files (1GB+)
 
-Standard pipelines hold the parsed file in memory (`Buffer` -> `String`). If you try to ingest a 5GB CSV or JSONL file, your Next.js server will crash with an "Out of Memory" (OOM) error.
-
-For massive files, use the `createStreamPipeline`. It reads the file line-by-line using Node streams, chunks it in batches, stores it, and instantly frees the memory.
+Standard pipelines hold the parsed file in memory. If you try to ingest a 5GB CSV or JSONL file, your Next.js server will crash with an "Out of Memory" (OOM) error. For massive files, use the `createStreamPipeline`. It reads the file line-by-line using Node streams, instantly freeing memory.
 
 ```typescript
-import { createStreamPipeline, MemoryAdapter } from 'ingestify';
+import { createStreamPipeline, MemoryAdapter } from '@sachinjat2802/ingestify';
 import fs from 'fs';
 
 const pipeline = createStreamPipeline('massive-csv')
   .setBatchSize(5000) // Process 5000 lines at a time
   .transform(async (chunks) => {
-    // Modify your chunks as usual
     return chunks;
   })
   .store(new MemoryAdapter())
@@ -125,17 +124,23 @@ const pipeline = createStreamPipeline('massive-csv')
 
 // Pass a ReadableStream instead of a Buffer
 const stream = fs.createReadStream('huge-10GB-dataset.csv');
-
 const result = await pipeline.run(stream, 'huge-10GB-dataset.csv');
+
 console.log(`Processed ${result.linesProcessed} lines using almost zero RAM!`);
 ```
 
-### Next.js API Route
+---
+
+## ⚡ Next.js Integration
+
+Ingestify provides helpers built specifically for the Next.js App Router and React Server Components.
+
+### API Route Handler
 
 ```typescript
 // app/api/ingest/route.ts
-import { createUploadHandler } from 'ingestify/nextjs';
-import { createPipeline, AutoParser, RecursiveChunker } from 'ingestify';
+import { createUploadHandler } from '@sachinjat2802/ingestify/nextjs';
+import { createPipeline, AutoParser, RecursiveChunker } from '@sachinjat2802/ingestify';
 
 const pipeline = createPipeline('upload')
   .parse(new AutoParser())
@@ -147,21 +152,20 @@ export const POST = createUploadHandler({
   maxFileSize: '25mb',
   allowedTypes: ['application/pdf', '.docx', '.csv'],
   onComplete: async (result) => {
-    // Save to your DB, trigger webhooks, etc.
+    // Webhook or DB logic here
   },
 });
 ```
 
-### React Upload Component
+### React Client Hook
 
 ```tsx
 'use client';
-import { useIngest } from 'ingestify/nextjs';
+import { useIngest } from '@sachinjat2802/ingestify/nextjs';
 
 export function FileUploader() {
-  const { upload, status, progress, result, error, reset } = useIngest('/api/ingest', {
+  const { upload, status, progress, result, error } = useIngest('/api/ingest', {
     metadata: { userId: 'user-123' },
-    onSuccess: (res) => console.log('Ingested!', res),
   });
 
   return (
@@ -172,11 +176,7 @@ export function FileUploader() {
         onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])}
         disabled={status === 'uploading' || status === 'processing'}
       />
-
       {status === 'processing' && <p>Processing... {progress}%</p>}
-      {status === 'complete' && <p>✅ Created {result?.chunks} chunks</p>}
-      {status === 'error' && <p>❌ {error?.message}</p>}
-      {status !== 'idle' && <button onClick={reset}>Reset</button>}
     </div>
   );
 }
@@ -187,8 +187,6 @@ export function FileUploader() {
 ## 📖 API Reference
 
 ### `createPipeline(name)`
-
-Creates a pipeline builder with a fluent API.
 
 | Method | Description |
 |--------|-------------|
@@ -216,14 +214,6 @@ Creates a pipeline builder with a fluent API.
 | `TextParser` | `.txt`, `.md`, `.html`, `.xml` | — |
 | `AutoParser` | All of the above | — |
 
-### Chunkers
-
-| Chunker | Strategy |
-|---------|----------|
-| `FixedSizeChunker` | Split at fixed character count with overlap |
-| `SentenceChunker` | Split on sentence boundaries |
-| `RecursiveChunker` | Recursively split using separator hierarchy (paragraphs → sentences → words) |
-
 ### Storage Adapters
 
 | Adapter | Use Case |
@@ -235,50 +225,6 @@ Creates a pipeline builder with a fluent API.
 
 ---
 
-## 🔧 Custom Adapters
-
-### Custom Parser
-
-```typescript
-import type { IParser, ParsedDocument } from 'ingestify';
-
-class MyParser implements IParser {
-  supportedTypes = ['application/x-custom'];
-
-  canParse(mimeType: string) {
-    return this.supportedTypes.includes(mimeType);
-  }
-
-  async parse(buffer: Buffer, fileName: string) {
-    // Your parsing logic
-    return { fileName, mimeType: 'application/x-custom', content: '...', metadata: {} };
-  }
-}
-```
-
-### Custom Storage Adapter
-
-```typescript
-import type { IStorageAdapter, StorageRecord } from 'ingestify';
-
-class PostgresAdapter implements IStorageAdapter {
-  name = 'PostgresAdapter';
-
-  async store(record: StorageRecord) {
-    // INSERT INTO your_table ...
-    return { id: record.id };
-  }
-
-  async retrieve(id: string) { /* SELECT ... */ }
-  async list(filter?) { /* SELECT ... */ }
-  async delete(id: string) { /* DELETE ... */ }
-}
-```
-
----
-
 ## 📄 License
 
 MIT
-#   i n g e s t i f y  
- 
