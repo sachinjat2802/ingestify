@@ -1,6 +1,6 @@
 {
   "name": "ingestify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A composable, pipeline-based data ingestion toolkit for Next.js and Node.js projects. Parse, chunk, transform, validate, and store data from any source.",
   "keywords": [
     "data-ingestion",
@@ -18,12 +18,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/ingestify.git"
+    "url": "https://github.com/sachinjat2802/ingestify.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/ingestify/issues"
+    "url": "https://github.com/sachinjat2802/ingestify/issues"
   },
-  "homepage": "https://github.com/your-username/ingestify#readme",
+  "homepage": "https://github.com/sachinjat2802/ingestify#readme",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
