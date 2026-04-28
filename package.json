@@ -1,6 +1,6 @@
 {
   "name": "ingestify",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A composable, pipeline-based data ingestion toolkit for Next.js and Node.js projects. Parse, chunk, transform, validate, and store data from any source.",
   "keywords": [
     "data-ingestion",
@@ -53,10 +53,15 @@
       "import": "./dist/storage/index.js",
       "require": "./dist/storage/index.cjs"
     },
-    "./nextjs": {
-      "types": "./dist/nextjs/index.d.ts",
-      "import": "./dist/nextjs/index.js",
-      "require": "./dist/nextjs/index.cjs"
+    "./nextjs/server": {
+      "types": "./dist/nextjs/server.d.ts",
+      "import": "./dist/nextjs/server.js",
+      "require": "./dist/nextjs/server.cjs"
+    },
+    "./nextjs/client": {
+      "types": "./dist/nextjs/client.d.ts",
+      "import": "./dist/nextjs/client.js",
+      "require": "./dist/nextjs/client.cjs"
     }
   },
   "files": [
@@ -72,7 +77,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "mime-types": "^2.1.35"
+    "mammoth": "^1.6.0",
+    "mime-types": "^2.1.35",
+    "papaparse": "^5.4.0",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5",
+    "zod": "^3.22.0"
   },
   "devDependencies": {
     "@types/mime-types": "^2.1.4",
@@ -87,30 +97,10 @@
     "zod": "^4.3.6"
   },
   "peerDependencies": {
-    "mammoth": "^1.6.0",
     "next": "^14.0.0 || ^15.0.0",
-    "papaparse": "^5.4.0",
-    "pdf-parse": "^1.1.1",
-    "react": "^18.0.0 || ^19.0.0",
-    "xlsx": "^0.18.5",
-    "zod": "^3.22.0"
+    "react": "^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
-    "zod": {
-      "optional": true
-    },
-    "pdf-parse": {
-      "optional": true
-    },
-    "mammoth": {
-      "optional": true
-    },
-    "papaparse": {
-      "optional": true
-    },
-    "xlsx": {
-      "optional": true
-    },
     "react": {
       "optional": true
     },

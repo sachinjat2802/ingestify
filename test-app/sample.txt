@@ -1,0 +1,5 @@
+Ingestify is a composable, pipeline-based data ingestion toolkit.
+It supports parsing various file formats, chunking text, and transforming data.
+This is a sample document to test the ingestion pipeline.
+We have 6 built-in parsers and 3 chunking strategies.
+It integrates seamlessly with Next.js App Router.

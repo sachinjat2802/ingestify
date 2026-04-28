@@ -49,19 +49,6 @@ yarn add ingestify
 pnpm add ingestify
 ```
 
-### 🧩 Optional Peer Dependencies
-Ingestify stays lightweight by only loading the parsers you actually need. Install the ones your project requires:
-
-```bash
-npm install pdf-parse   # PDF support
-npm install mammoth     # Word documents (.docx)
-npm install papaparse   # CSV/TSV
-npm install xlsx        # Excel (.xlsx)
-npm install zod         # Schema validation
-```
-
----
-
 ## 🛠️ Quick Start
 
 ### 1. The Easiest Way (Zero Config)
@@ -231,15 +218,15 @@ export function FileUploader() {
 
 ### Parsers
 
-| Parser | Supported Files | Required Peer Dependency |
-|--------|-----------------|--------------------------|
-| `PDFParser` | `.pdf` | `pdf-parse` |
-| `DOCXParser` | `.docx` | `mammoth` |
-| `CSVParser` | `.csv`, `.tsv` | `papaparse` |
-| `ExcelParser` | `.xlsx`, `.xls` | `xlsx` |
-| `JSONParser` | `.json`, `.jsonl` | *(None)* |
-| `TextParser` | `.txt`, `.md`, `.html`, `.xml` | *(None)* |
-| `AutoParser` | All of the above | *(None)* |
+| Parser | Supported Files |
+|--------|-----------------|
+| `PDFParser` | `.pdf` |
+| `DOCXParser` | `.docx` |
+| `CSVParser` | `.csv`, `.tsv` |
+| `ExcelParser` | `.xlsx`, `.xls` |
+| `JSONParser` | `.json`, `.jsonl` |
+| `TextParser` | `.txt`, `.md`, `.html`, `.xml` |
+| `AutoParser` | All of the above |
 
 ### Storage Adapters
 

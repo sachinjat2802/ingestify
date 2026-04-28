@@ -9,7 +9,7 @@ export type IngestStatus = 'idle' | 'uploading' | 'processing' | 'complete' | 'e
 export interface IngestResponse {
   success: boolean;
   fileName: string;
-  chunks: number;
+  chunks: number | any[];
   stats: {
     totalTimeMs: number;
     chunkCount: number;

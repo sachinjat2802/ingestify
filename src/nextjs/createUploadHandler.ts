@@ -16,6 +16,8 @@ export interface UploadHandlerConfig {
   onError?: (error: Error, fileName: string) => void | Promise<void>;
   /** Custom metadata extractor from the request. */
   extractMetadata?: (formData: FormData) => Record<string, unknown>;
+  /** Whether to return the actual chunk objects in the response (can be large). Default: false. */
+  returnChunks?: boolean;
 }
 
 /**
@@ -86,7 +88,7 @@ export function createUploadHandler(config: UploadHandlerConfig) {
       return Response.json({
         success: true,
         fileName: file.name,
-        chunks: result.chunks.length,
+        chunks: config.returnChunks ? result.chunks : result.chunks.length,
         stats: result.stats,
         warnings: result.warnings,
         data: result.data,
